@@ -19,25 +19,6 @@ namespace TestTaskForLM
         // я перерыл много разных источников, но смог найти ток такой способ
         // оно работает медленно нужно подождать
         // и кстати, это тоже работает со старым форматом
-        public static void doit(Microsoft.Office.Interop.Word.Document docs, string summaryInformation) {
-            var wordProperties = docs.BuiltInDocumentProperties;
-            Type typeDocBuiltInProps = wordProperties.GetType();
-            for (int i = 0; i < properties.Length; i++)
-            {
-                try
-                {
-                    Object Title = typeDocBuiltInProps.InvokeMember("Item", BindingFlags.Default | BindingFlags.GetProperty
-                   , null, wordProperties, new object[] { properties[i] });
-                    Type typeTitleprop = Title.GetType();
-                    string strTitleprop = typeTitleprop.InvokeMember("Value", BindingFlags.Default | BindingFlags.GetProperty, null, Title, new object[] { }).ToString();
-                    summaryInformation += properties[i] + ":  " + strTitleprop;
-                }
-                catch (Exception j)
-                {
-                    summaryInformation += j.Message;
-                }
-            }
-        }
         public override string processing(string fileNAme)
         {
                 //create word app class object                                                                                                                         //           object file = FILENAME;                                               //this is the path to file to open
