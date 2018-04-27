@@ -19,7 +19,6 @@ namespace TestTaskForLM
                 exe = ".doc";
             if (determinationFile is OfficeDocumentDocx)
                 exe = ".docx";
-
         }
         public string processing()
         {

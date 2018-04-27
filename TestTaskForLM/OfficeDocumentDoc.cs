@@ -17,11 +17,11 @@ namespace TestTaskForLM
             "Title", "Creation Date", "Revision Number", "Last Author", "Company" };
 
         // я перерыл много разных источников, но смог найти ток такой способ
-        // оно работает медленно нужно подождать
-        // и кстати, это тоже работает со старым форматом
-        public override string processing(string fileNAme)
+        // оно работает медленно, нужно подождать
+        // и кстати, это тоже работает с новым форматом
+        public override string processing(string fileName)
         {
-                //create word app class object                                                                                                                         //           object file = FILENAME;                                               //this is the path to file to open
+             //create word app class object                                                                                                                         //           object file = FILENAME;                                               //this is the path to file to open
             string summaryInformation = "This is old format  \n";
             var nullobject = System.Reflection.Missing.Value;
             Microsoft.Office.Interop.Word.Application wordObject = null;
@@ -29,10 +29,16 @@ namespace TestTaskForLM
             try
             {
                 wordObject = new Microsoft.Office.Interop.Word.Application();
-                docs = wordObject.Documents.Open(fileNAme, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject,
-                 nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject);
-                var wordProperties = docs.BuiltInDocumentProperties;
-                Type typeDocBuiltInProps = wordProperties.GetType();
+                docs = wordObject.Documents.Open(fileName, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject,
+                 nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject);           
+            }
+            catch (Exception ex)
+            {
+                wordObject.Quit();
+                return summaryInformation + " but, couldn't open and procces this file";
+            }
+            var wordProperties = docs.BuiltInDocumentProperties;
+            Type typeDocBuiltInProps = wordProperties.GetType();
                 for (int i = 0; i < properties.Length; i++)
                 {
                     try
@@ -42,22 +48,15 @@ namespace TestTaskForLM
                         Type typeTitleprop = Title.GetType();
                         string strTitleprop = typeTitleprop.InvokeMember("Value", BindingFlags.Default | BindingFlags.GetProperty,
                             null, Title, new object[] { }).ToString();
-                        summaryInformation += properties[i] + ":  " + strTitleprop;
+                        summaryInformation += properties[i] + ":  " + strTitleprop+";  ";
                     }
                     catch (Exception j)
                     {
                         summaryInformation += j.Message;
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                wordObject.Quit();  
-                return summaryInformation + " but, couldn't open and procces file";
-            }                                
+                }                               
                 docs.Close(WdSaveOptions.wdDoNotSaveChanges, nullobject, nullobject);
-                ((_Application)wordObject).Quit(WdSaveOptions.wdDoNotSaveChanges);
-                        
+                ((_Application)wordObject).Quit(WdSaveOptions.wdDoNotSaveChanges);                        
             return summaryInformation;
         }
     }
