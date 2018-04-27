@@ -19,21 +19,37 @@ namespace TestTaskForLM
         // я перерыл много разных источников, но смог найти ток такой способ
         // оно работает медленно нужно подождать
         // и кстати, это тоже работает со старым форматом
+        public static void doit(Microsoft.Office.Interop.Word.Document docs, string summaryInformation) {
+            var wordProperties = docs.BuiltInDocumentProperties;
+            Type typeDocBuiltInProps = wordProperties.GetType();
+            for (int i = 0; i < properties.Length; i++)
+            {
+                try
+                {
+                    Object Title = typeDocBuiltInProps.InvokeMember("Item", BindingFlags.Default | BindingFlags.GetProperty
+                   , null, wordProperties, new object[] { properties[i] });
+                    Type typeTitleprop = Title.GetType();
+                    string strTitleprop = typeTitleprop.InvokeMember("Value", BindingFlags.Default | BindingFlags.GetProperty, null, Title, new object[] { }).ToString();
+                    summaryInformation += properties[i] + ":  " + strTitleprop;
+                }
+                catch (Exception j)
+                {
+                    summaryInformation += j.Message;
+                }
+            }
+        }
         public override string processing(string fileNAme)
         {
-            Microsoft.Office.Interop.Word.Application wordObject = new Microsoft.Office.Interop.Word.Application();     //create word app class object                                                                                                                         //           object file = FILENAME;                                               //this is the path to file to open
+                //create word app class object                                                                                                                         //           object file = FILENAME;                                               //this is the path to file to open
             string summaryInformation = "This is old format  \n";
             var nullobject = System.Reflection.Missing.Value;
+            Microsoft.Office.Interop.Word.Application wordObject = null;
             Microsoft.Office.Interop.Word.Document docs=null;
             try
             {
-            docs = wordObject.Documents.Open(fileNAme, nullobject, nullobject, nullobject, nullobject,
-            nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject);
-            }
-            catch (Exception ex)
-            {
-                return summaryInformation+" but, couldn't open file";
-            }    
+                wordObject = new Microsoft.Office.Interop.Word.Application();
+                docs = wordObject.Documents.Open(fileNAme, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject,
+                 nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject, nullobject);
                 var wordProperties = docs.BuiltInDocumentProperties;
                 Type typeDocBuiltInProps = wordProperties.GetType();
                 for (int i = 0; i < properties.Length; i++)
@@ -43,15 +59,21 @@ namespace TestTaskForLM
                         Object Title = typeDocBuiltInProps.InvokeMember("Item", BindingFlags.Default | BindingFlags.GetProperty
                        , null, wordProperties, new object[] { properties[i] });
                         Type typeTitleprop = Title.GetType();
-                        string strTitleprop = typeTitleprop.InvokeMember("Value", BindingFlags.Default | BindingFlags.GetProperty, null, Title, new object[] { }).ToString();
-                        summaryInformation += properties[i] + ":  " + strTitleprop + "\n";
+                        string strTitleprop = typeTitleprop.InvokeMember("Value", BindingFlags.Default | BindingFlags.GetProperty,
+                            null, Title, new object[] { }).ToString();
+                        summaryInformation += properties[i] + ":  " + strTitleprop;
                     }
                     catch (Exception j)
                     {
-                        summaryInformation += j.Message ;
+                        summaryInformation += j.Message;
                     }
                 }
-                 
+            }
+            catch (Exception ex)
+            {
+                wordObject.Quit();  
+                return summaryInformation + " but, couldn't open and procces file";
+            }                                
                 docs.Close(WdSaveOptions.wdDoNotSaveChanges, nullobject, nullobject);
                 ((_Application)wordObject).Quit(WdSaveOptions.wdDoNotSaveChanges);
                         

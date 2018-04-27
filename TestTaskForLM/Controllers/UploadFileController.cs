@@ -26,7 +26,7 @@ namespace TestTaskForLM.Controllers
             if (file != null && file.ContentLength > 0) 
             {
                 string filename   = Path.GetFileName(file.FileName);
-                byte[] bytesfile = new byte[10];// 10 bytes is enought for determination
+                byte[] bytesfile = new byte[10]; // 10 bytes is enought for determination
                 file.InputStream.Read(bytesfile, 0, 10);
                 string SaveLocation = Path.Combine(Server.MapPath("~/Data"), filename);
                 Document uploadedFile = new Document(DeterminationFormatFile.GetFormatFile(bytesfile, SaveLocation), SaveLocation);
